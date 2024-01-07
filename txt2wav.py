@@ -18,16 +18,9 @@ def process_number(number):
     print(text)
     return f' {text} '
 
-def find_replace_numbers(file_path):
-    with open(file_path, 'r') as file:
-        text = file.read()
-
+def find_replace_numbers(text):
     # Replace all numbers with a written text equivalents
-    text = re.sub(r'(\d[\d\s]*)', lambda x: process_number(x.group()), text)
-
-    # Write the replaced text back to the file
-    with open(file_path, 'w') as file:
-        file.write(text)
+    return re.sub(r'(\d[\d\s]*)', lambda x: process_number(x.group()), text)
 
 def parse_text_fragments(filename):
     with open(filename, 'r') as file:
