@@ -38,3 +38,21 @@ The steps above can be now followed by packages installation:
 pip install -r requirements.txt
 ```
 
+## Docker
+
+```
+docker build -t epub2tts_fr .
+```
+
+## Usage
+
+```
+python3.10 ./txt2wav example/oceania.txt example/oceania.wav
+```
+
+Usage through Docker container:
+
+```
+bash -c 'docker run -v "$PWD:$PWD" -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/nltk_data:/root/nltk_data -w "$PWD" epub2tts_fr example/oceania.txt example/oceania.wav'
+```
+
