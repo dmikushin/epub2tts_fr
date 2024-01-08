@@ -8,6 +8,18 @@ import subprocess
 from tensorflow_tts.inference import AutoProcessor
 from tensorflow_tts.inference import TFAutoModel
 
+# Enable memory growth for all GPUs. The memory growth setting attempts to allocate
+# only as much GPU memory as needed for the runtime allocations and releases it
+# when no longer needed. This can lead to higher memory fragmentation, but allows
+# multiple Docker containers to use a single GPU simultaneously.
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(e)
+
 def process_number(number):
     # Remove spaces between digits
     number = re.sub(r'\s+', '', number)
@@ -37,7 +49,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         print(f'Usage: {sys.argv[0]} <ebook_txt_filename> <ebook_wav_filename>')
         sys.exit(1)
-        
+
     input_filename = sys.argv[1]
     output_filename = sys.argv[2]
 
@@ -78,7 +90,8 @@ if __name__ == '__main__':
             audio = np.int16(audio/np.max(np.abs(audio)) * 32767)
             f.writeframes(audio)
             f.writeframes(pause)
-                        
+
             print(f'{i}/{len(fragments)}')
             i = i + 1
+
 
