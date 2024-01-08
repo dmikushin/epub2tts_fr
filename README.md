@@ -58,3 +58,6 @@ Usage through Docker container:
 bash -c 'docker run --gpus all -v "$PWD:$PWD" -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/nltk_data:/root/nltk_data -w "$PWD" epub2tts_fr example/oceania.txt example/oceania.wav'
 ```
 
+## Working notes
+
+Startup overhead of TensorFlow is huge, especially with the GPU backend. This system clearly needs to be reworked into a persistently resident service. However, the GPU memory footprint of it will be 1-2 GiB. TensorFlow or CUDA should provide a way to swap the GPU memory to host.
