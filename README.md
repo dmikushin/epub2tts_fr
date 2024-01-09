@@ -40,8 +40,16 @@ pip install -r requirements.txt
 
 ## Docker
 
+Build Docker container for NVIDIA GPU:
+
 ```
 docker build -t epub2tts_fr .
+```
+
+Build Docker container for AMD GPU:
+
+```
+docker build -t epub2tts_fr . -f Dockerfile.amd
 ```
 
 In order to have GPU support in Docker, CUDA>=11.7 must be present on the host machine
@@ -52,10 +60,18 @@ In order to have GPU support in Docker, CUDA>=11.7 must be present on the host m
 python3.10 ./txt2wav example/oceania.txt example/oceania.wav
 ```
 
-Usage through Docker container:
+Usage through Docker container with NVIDIA GPU:
 
 ```
 bash -c 'docker run --gpus all -v "$PWD:$PWD" -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/nltk_data:/root/nltk_data -w "$PWD" epub2tts_fr example/oceania.txt example/oceania.wav'
+```
+
+Usage through Docker container with AMD GPU:
+
+```
+bash -c 'docker run --privileged --rm --device=/dev/kfd --device /dev/dri:/dev/dri:rw --group-add video --cap-add=SYS
+_PTRACE --security-opt seccomp=unconfined -v "$PWD:$PWD" -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/.cache/tensorflow_tts/:/root/.cache/tensorf
+low_tts/ -v ~/nltk_data:/root/nltk_data -w "$PWD" epub2tts_fr example/oceania.txt example/oceania.wav'
 ```
 
 ## Working notes
