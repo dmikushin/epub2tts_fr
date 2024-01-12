@@ -1,0 +1,36 @@
+# Docker container for building ROCm TensorFlow from source.
+# Based on: https://gist.github.com/briansp2020/1e8c3e5735087398ebfd9514f26a0007
+FROM ubuntu:22.04
+
+# Install bazel 6.1
+RUN apt update && \
+    apt install -y --no-install-recommends ca-certificates curl gnupg
+
+RUN curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor -o /usr/share/keyrings/bazel-archive-keyring.gpg
+
+RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
+
+RUN apt update && \
+    apt install -y --no-install-recommends bazel-6.1.0 && \
+    ln -s /usr/bin/bazel-6.1.0 /usr/bin/bazel
+
+ENV VERSION 5.7
+ENV VERSION2 5.7.0
+
+RUN apt-get install -y --no-install-recommends lsb-release && \
+    curl -fsSL http://repo.radeon.com/rocm/rocm.gpg.key | gpg --dearmor -o /usr/share/keyrings/rocm-archive-keyring.gpg && \
+    ROCM_REPO="http://repo.radeon.com/rocm/apt/${VERSION}" \
+    sh -c 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/rocm-archive-keyring.gpg] $ROCM_REPO $(lsb_release -cs) main" > /etc/apt/sources.list.d/rocm.list' && \
+    AMDGPU_REPO="https://repo.radeon.com/amdgpu/${VERSION}/ubuntu" \
+    sh -c 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/rocm-archive-keyring.gpg] $AMDGPU_REPO $(lsb_release -cs) main" > /etc/apt/sources.list.d/amdgpu.list' && \
+    apt-get update && apt-get install -y --no-install-recommends rocm-developer-tools${VERSION2} hip-dev${VERSION2} miopen-hip-dev${VERSION2} rocblas-dev${VERSION2} hipblas-dev${VERSION2} hipblaslt-dev${VERSION2} rocrand-dev${VERSION2} rocfft-dev${VERSION2} hipfft-dev${VERSION2} hipsparse-dev${VERSION2} rocsolver-dev${VERSION2} hipsolver-dev${VERSION2} rocminfo${VERSION2} rccl-dev${VERSION2} rocm-device-libs${VERSION2} hipcub-dev${VERSION2} rocprim-dev${VERSION2} libboost-filesystem-dev git patch kmod python3.10 patchelf python3-pip python3-wheel && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+
+COPY rocm_agent_enumerator.patch /
+
+RUN patch -p0 < /rocm_agent_enumerator.patch
+
+ENTRYPOINT [ "/bin/bash", "tensorflow/build.sh" ]

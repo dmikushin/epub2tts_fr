@@ -1,0 +1,13 @@
+--- /opt/rocm/bin/rocm_agent_enumerator	2024-01-10 09:50:42.789634262 -0500
++++ /opt/rocm/bin/rocm_agent_enumerator	2024-01-10 09:50:12.477779198 -0500
+@@ -71,7 +71,9 @@
+   # Beige_Goby
+   "gfx1034" : [0x7420, 0x7421, 0x7422, 0x7423, 0x743f],
+   # Yellow_Carp
+-  "gfx1035" : [0x164d, 0x1681]
++  "gfx1035" : [0x164d, 0x1681],
++  # Plum_Bonito
++  "gfx1100" : [0x744c]
+ }
+ 
+ def staticVars(**kwargs):

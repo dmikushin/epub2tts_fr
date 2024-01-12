@@ -49,6 +49,8 @@ docker build -t epub2tts_fr .
 Build Docker container for AMD GPU:
 
 ```
+docker build -t amd-tensorflow . -f Dockerfile.amd-tensorflow
+docker run --privileged --rm --device=/dev/kfd --device /dev/dri:/dev/dri:rw --group-add video --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v ./amd-tensorflow:/tensorflow -v ./amd-tensorflow/tensorflow_pkg:/tmp/tensorflow_pkg amd-tensorflow
 docker build -t epub2tts_fr . -f Dockerfile.amd
 ```
 
@@ -69,9 +71,7 @@ bash -c 'docker run --gpus all -v "$PWD:$PWD" -v ~/.cache/tensorflow_tts/:/root/
 Usage through Docker container with AMD GPU:
 
 ```
-bash -c 'docker run --privileged --rm --device=/dev/kfd --device /dev/dri:/dev/dri:rw --group-add video --cap-add=SYS
-_PTRACE --security-opt seccomp=unconfined -v "$PWD:$PWD" -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/.cache/tensorflow_tts/:/root/.cache/tensorf
-low_tts/ -v ~/nltk_data:/root/nltk_data -w "$PWD" epub2tts_fr example/oceania.txt example/oceania.wav'
+bash -c 'docker run --privileged --rm --device=/dev/kfd --device /dev/dri:/dev/dri:rw --group-add video --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v "$PWD:$PWD" -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/.cache/tensorflow_tts/:/root/.cache/tensorflow_tts/ -v ~/nltk_data:/root/nltk_data -w "$PWD" epub2tts_fr example/oceania.txt example/oceania.wav'
 ```
 
 ## Working notes

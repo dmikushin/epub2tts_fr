@@ -1,6 +1,6 @@
 .git
-Dockerfile
-Dockerfile.amd
+Dockerfile*
 example
 venv
 README.md
+amd-tensorflow
